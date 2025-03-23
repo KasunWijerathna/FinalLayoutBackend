@@ -1,0 +1,44 @@
+import { IsString, IsEnum, IsOptional, IsUrl } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { DeviceType, DeviceStatus } from '../schemas/device.schema';
+
+export class CreateDeviceDto {
+  @ApiProperty({
+    description: 'Unique device serial number',
+    example: 'DEV-2024-001'
+  })
+  @IsString()
+  serialNumber: string;
+
+  @ApiProperty({
+    description: 'Device type',
+    enum: DeviceType,
+    example: DeviceType.POS
+  })
+  @IsEnum(DeviceType)
+  type: DeviceType;
+
+  @ApiProperty({
+    description: 'Device status',
+    enum: DeviceStatus,
+    example: DeviceStatus.ACTIVE
+  })
+  @IsEnum(DeviceStatus)
+  status: DeviceStatus;
+
+  @ApiProperty({
+    description: 'URL of the device image',
+    required: false,
+    example: 'https://example.com/device-image.jpg'
+  })
+  @IsOptional()
+  @IsUrl()
+  image?: string;
+
+  @ApiProperty({
+    description: 'ID of the location where the device is installed',
+    example: '507f1f77bcf86cd799439011'
+  })
+  @IsString()
+  location: string;
+} 
