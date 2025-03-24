@@ -18,7 +18,7 @@ export class DevicesService {
     );
 
     if (!location) {
-      throw new BadRequestException('Location not found');
+      throw new BadRequestException('Location not found or you do not have access to this location');
     }
 
     const deviceCount = await this.deviceModel
@@ -31,7 +31,10 @@ export class DevicesService {
       );
     }
 
-    const createdDevice = new this.deviceModel(createDeviceDto);
+    const createdDevice = new this.deviceModel({
+      ...createDeviceDto,
+      user: userId
+    });
     return createdDevice.save();
   }
 

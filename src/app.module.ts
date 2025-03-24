@@ -6,6 +6,7 @@ import { DevicesModule } from './devices/devices.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CustomLogger } from './common/services/logger.service';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CustomLogger } from './common/services/logger.service';
     UsersModule,
     LocationsModule,
     DevicesModule,
+    DashboardModule,
   ],
   providers: [CustomLogger],
 })
