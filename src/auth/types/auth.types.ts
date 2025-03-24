@@ -21,6 +21,9 @@ export class AuthResponse {
   @ApiProperty()
   access_token: string;
 
+  @ApiProperty()
+  refresh_token: string;
+
   @ApiProperty({ type: UserResponse })
   user: UserResponse;
 }

@@ -23,7 +23,8 @@ export class AuthService {
       
       const payload = { sub: user._id, email: user.email };
       return {
-        access_token: this.jwtService.sign(payload),
+        access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
+        refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
         user: {
           _id: user._id,
           name: user.name,
@@ -53,7 +54,8 @@ export class AuthService {
 
     const payload = { sub: user._id, email: user.email };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
       user: {
         _id: user._id,
         name: user.name,
@@ -61,6 +63,35 @@ export class AuthService {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
+    };
+  }
+
+  decodeToken(token: string): { sub: string; email: string } {
+    try {
+      // Try to verify the token
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (error: any) {
+      // If the token is expired, we can still decode it to get the user ID
+      if (error.name === 'TokenExpiredError') {
+        const decoded = this.jwtService.decode(token) as { sub: string; email: string };
+        if (decoded && decoded.sub) {
+          return decoded;
+        }
+      }
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  async refreshToken(userId: string): Promise<{ access_token: string }> {
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const payload = { sub: user._id, email: user.email };
+    return {
+      access_token: this.jwtService.sign(payload),
     };
   }
 
